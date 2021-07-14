@@ -2,4 +2,3 @@ TEST
 daniel arevalo
 mateo lardiez
 santiago bianucci
-diego
