@@ -50,4 +50,23 @@ def main():
             corte = True
 
     print('Hola')
+
+def crear_carpetas():
+    docentes = []
+    #no esta completo pero para ya ahcer el push pq no se si estoy el finde :D
+    # crear carpeta inicial
+    materia = input("Ingrese las materia: ")
+    os.mkdir(materia)
+    cant_docentes = int(input("Ingrese la cantidad de docentes en la materia: "))
+    for j in range(cant_docentes):
+        docente = input(("Ingrese los datos del docente con el siguiente formato, nombre y apellido  mail :"))
+        os.mkdir((os.path.join(materia, docente)))
+        docentes.append(docente)
+
+    for k in range(len(docentes)):
+        print(docentes)
+        cant_alum_prof = int(input("Ingrese la cantidad de alumnos de ese profesor"))
+        for i in range(cant_alum_prof):
+            alumno = input("Ingrese los datos del alumno: \n Formato: nombre del alumno, padron, mail")
+            os.mkdir((os.path.join(materia, docente, alumno)))
 main()
