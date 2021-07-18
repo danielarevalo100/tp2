@@ -36,6 +36,18 @@ def getAttachmentsIds(parts : dict = {}):
     partsWithAttachments = list(filter(lambda item: 'attachmentId' in item['body'], parts))
     return list(map(lambda item: item['body']['attachmentId'] ,partsWithAttachments))
 
+def ingresarEntero(mensaje: str) -> int:
+    '''
+    Pre:  Recibe un input
+    Post: Retorna el valor solo si es validado por la condicion Is Numeric
+    '''
+
+    valor = input(mensaje)
+    while not (valor.isnumeric()):
+        valor = input("Error, ingrese el valor nuevamente: ")
+    valor = int(valor)
+
+    return valor
 
 
 def main():
@@ -84,20 +96,20 @@ def main():
 
 def crear_carpetas():
     docentes = []
-    #no esta completo pero para ya ahcer el push pq no se si estoy el finde :D
-    # crear carpeta inicial
+    #crear carpeta inicial
     materia = input("Ingrese las materia: ")
     os.mkdir(materia)
-    cant_docentes = int(input("Ingrese la cantidad de docentes en la materia: "))
-    for j in range(cant_docentes):
+    cant_docentes = ingresarEntero("Ingrese la cantidad de docentes en la materia: ")
+    for j in range (cant_docentes):
         docente = input(("Ingrese los datos del docente con el siguiente formato, nombre y apellido  mail :"))
         os.mkdir((os.path.join(materia, docente)))
         docentes.append(docente)
 
-    for k in range(len(docentes)):
-        print(docentes)
-        cant_alum_prof = int(input("Ingrese la cantidad de alumnos de ese profesor"))
-        for i in range(cant_alum_prof):
+    for k in range (len(docentes)):
+        print(docentes[0])
+        cant_alum_prof = ingresarEntero("Ingrese la cantidad de alumnos de ese profesor")
+        for i in range (cant_alum_prof):
             alumno = input("Ingrese los datos del alumno: \n Formato: nombre del alumno, padron, mail")
-            os.mkdir((os.path.join(materia, docente, alumno)))
+            os.mkdir((os.path.join(materia,docente,alumno)))
+
 main()
