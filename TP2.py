@@ -86,7 +86,7 @@ def crear_carpetas():
     os.mkdir(evaluacion)
 
     #carpeta de los docentes
-    with open (r'C:\Users\cuarc\Downloads\docentes.csv', "r") as csv_file:
+    with open (r'direccion de docentes.csv', "r") as csv_file:
         for csv_file in csv_file.readlines():
             nombresDocentes = csv_file.split(',')
             os.mkdir((os.path,join(evaluacion,nombres[0])))
