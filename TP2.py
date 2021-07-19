@@ -1,9 +1,8 @@
-from service_gmail import obtener_servicio
 from utils import * 
+from gmailUtils import *
 import base64
 import io 
 import zipfile
-
 
 def ingresar_opcion():
     print('\n')
@@ -25,35 +24,10 @@ def ingresar_opcion():
     opcion = int(opcion)
     return opcion
 
-def getEmailSubject(data : dict = {}) -> str:
-    headers = data['payload']['headers']
-    subject =  find(lambda item, i: item['name'] == 'Subject', headers)
-    if subject:
-        return subject['value']
-    return ''
-
-def getAttachmentsIds(parts : dict = {}):
-    partsWithAttachments = list(filter(lambda item: 'attachmentId' in item['body'], parts))
-    return list(map(lambda item: item['body']['attachmentId'] ,partsWithAttachments))
-
-
-
 def main():
     corte = False
-    service = obtener_servicio()
-
-    messageInfo = service.users().messages().get(userId='me', id='17ab6106a4a03c07').execute()
-    print(getEmailSubject(messageInfo))
-    attachments = getAttachmentsIds(messageInfo['payload']['parts'])
-    
-    att = service.users().messages().attachments().get(userId='me', messageId='17ab6106a4a03c07', id=attachments[0]).execute()
-    files = base64.urlsafe_b64decode(att['data'])
-    
-    z = zipfile.ZipFile(io.BytesIO(files))
-    z.extractall()
-    #fi = z.read(z.infolist()[0])
-    print(fi)
-
+    #service = obtener_servicio()
+  
     while not corte:
         opcion = ingresar_opcion()
 
