@@ -72,21 +72,16 @@ def main():
     print('Hola')
 
 def crear_carpetas():
-    docentes = []
-    #crear carpeta inicial
-    materia = input("Ingrese las materia: ")
-    os.mkdir(materia)
-    cant_docentes = requestNumber("Ingrese la cantidad de docentes en la materia: ", "Error!, ingresa un numero entero por favor: ")
-    for j in range (cant_docentes):
-        docente = input(("Ingrese los datos del docente con el siguiente formato, nombre y apellido  mail :"))
-        os.mkdir((os.path.join(materia, docente)))
-        docentes.append(docente)
+    evaluacion = "Algebra II"
+    os.mkdir(evaluacion)
 
-    for k in range (len(docentes)):
-        print(docentes[0])
-        cant_alum_prof = requestNumber("Ingrese la cantidad de alumnos de ese profesor", "Error!, Ingresa un numero entero por favor :")
-        for i in range (cant_alum_prof):
-            alumno = input("Ingrese los datos del alumno: \n Formato: nombre del alumno, padron, mail")
-            os.mkdir((os.path.join(materia,docente,alumno)))
+    #carpeta de los docentes
+    with open (r'direccion de docentes.csv', "r") as csv_file:
+        for csv_file in csv_file.readlines():
+            nombresDocentes = csv_file.split(',')
+            os.mkdir((os.path,join(evaluacion,nombres[0])))
+    with open(r'direccion de alumnos.csv', "r") as alumnos:
+        for alumnos in alumnos.readlines():
+        
 
 main()
