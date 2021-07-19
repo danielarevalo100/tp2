@@ -24,8 +24,7 @@ def ingresar_opcion():
     opcion = int(opcion)
     return opcion
 
-<<<<<<< HEAD
-=======
+
 def getEmailSubject(data : dict = {}) -> str:
     headers = data['payload']['headers']
     subject =  find(lambda item, i: item['name'] == 'Subject', headers)
@@ -38,7 +37,6 @@ def getAttachmentsIds(parts : dict = {}):
     return list(map(lambda item: item['body']['attachmentId'] ,partsWithAttachments))
 
 
->>>>>>> 0ff992a73ab603fdb3798b6d78c8ca2c502c4333
 def main():
     corte = False
     #service = obtener_servicio()
