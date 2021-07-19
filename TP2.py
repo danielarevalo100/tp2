@@ -24,6 +24,21 @@ def ingresar_opcion():
     opcion = int(opcion)
     return opcion
 
+<<<<<<< HEAD
+=======
+def getEmailSubject(data : dict = {}) -> str:
+    headers = data['payload']['headers']
+    subject =  find(lambda item, i: item['name'] == 'Subject', headers)
+    if subject:
+        return subject['value']
+    return ''
+
+def getAttachmentsIds(parts : dict = {}):
+    partsWithAttachments = list(filter(lambda item: 'attachmentId' in item['body'], parts))
+    return list(map(lambda item: item['body']['attachmentId'] ,partsWithAttachments))
+
+
+>>>>>>> 0ff992a73ab603fdb3798b6d78c8ca2c502c4333
 def main():
     corte = False
     #service = obtener_servicio()
@@ -58,20 +73,20 @@ def main():
 
 def crear_carpetas():
     docentes = []
-    #no esta completo pero para ya ahcer el push pq no se si estoy el finde :D
-    # crear carpeta inicial
+    #crear carpeta inicial
     materia = input("Ingrese las materia: ")
     os.mkdir(materia)
-    cant_docentes = int(input("Ingrese la cantidad de docentes en la materia: "))
-    for j in range(cant_docentes):
+    cant_docentes = requestNumber("Ingrese la cantidad de docentes en la materia: ", "Error!, ingresa un numero entero por favor: ")
+    for j in range (cant_docentes):
         docente = input(("Ingrese los datos del docente con el siguiente formato, nombre y apellido  mail :"))
         os.mkdir((os.path.join(materia, docente)))
         docentes.append(docente)
 
-    for k in range(len(docentes)):
-        print(docentes)
-        cant_alum_prof = int(input("Ingrese la cantidad de alumnos de ese profesor"))
-        for i in range(cant_alum_prof):
+    for k in range (len(docentes)):
+        print(docentes[0])
+        cant_alum_prof = requestNumber("Ingrese la cantidad de alumnos de ese profesor", "Error!, Ingresa un numero entero por favor :")
+        for i in range (cant_alum_prof):
             alumno = input("Ingrese los datos del alumno: \n Formato: nombre del alumno, padron, mail")
-            os.mkdir((os.path.join(materia, docente, alumno)))
+            os.mkdir((os.path.join(materia,docente,alumno)))
+
 main()
