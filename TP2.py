@@ -74,12 +74,17 @@ def crear_carpetas():
     os.mkdir(evaluacion)
 
     #carpeta de los docentes
-    with open (r'direccion de docentes.csv', "r") as csv_file:
+    with open (r':C\COSAS MUY IMPORTANTES\Facultad\python\docentes.csv', "r") as csv_file:
         for csv_file in csv_file.readlines():
             nombresDocentes = csv_file.split(',')
-            os.mkdir((os.path,join(evaluacion,nombres[0])))
-    with open(r'direccion de alumnos.csv', "r") as alumnos:
-        for alumnos in alumnos.readlines():
-        
+            os.mkdir((os.path.join(evaluacion,nombresDocentes[0])))
+
+    with open(r'C:\COSAS MUY IMPORTANTES\Facultad\python\docalum.csv', "r") as csv_file1:
+        for csv_file1 in csv_file1.readlines():
+            list_alumdoc = csv_file1.split(',')
+            if list_alumdoc[0] == nombresDocentes[0]:
+                os.mkdir((os.path.join(evaluacion,nombresDocentes[0],list_alumdoc[1])))
+
+
 
 main()
