@@ -31,21 +31,6 @@ def ingresar_opcion():
 
 
 
-def crear_carpetas():
-    evaluacion = "Algebra II" #es para probar. aca iria el directorio de la ev
-    os.mkdir(evaluacion)
-
-    #carpeta de los docentes
-    with open (r':C\COSAS MUY IMPORTANTES\Facultad\python\docentes.csv', "r") as csv_file: #mismo q arriba pero para el csv de docentes
-        for csv_file in csv_file.readlines():
-            nombresDocentes = csv_file.split(',')
-            os.mkdir((os.path.join(evaluacion,nombresDocentes[0])))
-
-    with open(r'C:\COSAS MUY IMPORTANTES\Facultad\python\docalum.csv', "r") as csv_file1: #idem carpeta doc-alum
-        for csv_file1 in csv_file1.readlines():
-            list_alumdoc = csv_file1.split(',')
-            if list_alumdoc[0] == nombresDocentes[0]:
-                os.mkdir((os.path.join(evaluacion,nombresDocentes[0],list_alumdoc[1])))
 
 def getEmailSubject(data : dict = {}) -> str:
     headers = data['payload']['headers']
