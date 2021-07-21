@@ -1,4 +1,5 @@
-
+import os
+import csv
 
 def ingresar_opcion():
     print('\n')
@@ -41,7 +42,7 @@ def main():
             pass
         
         if opcion == 6:
-            pass
+            crear_carpetas()
 
         if opcion == 7:
             pass
@@ -51,22 +52,41 @@ def main():
 
     print('Hola')
 
+
+def ingresarEntero(mensaje: str) -> int:
+    '''
+    Pre:  Recibe un input
+    Post: Retorna el valor solo si es validado por la condicion Is Numeric
+    '''
+
+    valor = input(mensaje)
+    while not (valor.isnumeric()):
+        valor = input("Error, ingrese el valor nuevamente: ")
+    valor = int(valor)
+
+    return valor
+
 def crear_carpetas():
     docentes = []
-    #no esta completo pero para ya ahcer el push pq no se si estoy el finde :D
-    # crear carpeta inicial
-    materia = input("Ingrese las materia: ")
-    os.mkdir(materia)
-    cant_docentes = int(input("Ingrese la cantidad de docentes en la materia: "))
-    for j in range(cant_docentes):
-        docente = input(("Ingrese los datos del docente con el siguiente formato, nombre y apellido  mail :"))
-        os.mkdir((os.path.join(materia, docente)))
-        docentes.append(docente)
+    alumnos = []
+    evaluacion = "AlgebraII"
+    os.mkdir(evaluacion)
+    i = 0
 
-    for k in range(len(docentes)):
-        print(docentes)
-        cant_alum_prof = int(input("Ingrese la cantidad de alumnos de ese profesor"))
-        for i in range(cant_alum_prof):
-            alumno = input("Ingrese los datos del alumno: \n Formato: nombre del alumno, padron, mail")
-            os.mkdir((os.path.join(materia, docente, alumno)))
-main()
+    # carpeta de los docentes
+    with open(r"C:\COSAS MUY IMPORTANTES\Facultad\python\docentes.csv", "r") as csv_file:
+        for csv_file in csv_file.readlines():
+            nombresDocentes = csv_file.split(',')
+            os.mkdir((os.path.join(evaluacion, nombresDocentes[0])))
+            docentes.append(nombresDocentes)
+    with open(r"C:\COSAS MUY IMPORTANTES\Facultad\python\docalum.csv", "r") as csv_file1:
+        for csv_file1 in csv_file1.readlines():
+            list_alumdoc = csv_file1.split(',')
+            alumnos.append(list_alumdoc)
+        print(alumnos)
+        for i in range(len(docentes)):
+            for k in range(len(alumnos)):
+                print(evaluacion, docentes[i][0], alumnos[k][1])
+                if alumnos[k][0] == docentes[i][0]:
+                    os.mkdir((os.path.join(evaluacion, docentes[i][0], alumnos[k][1])))
+                print(os.path.join(evaluacion, docentes[i][0], alumnos[k][1]))
