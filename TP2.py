@@ -24,7 +24,6 @@ def ingresar_opcion():
     opcion = int(opcion)
     return opcion
 
-
 def getEmailSubject(data : dict = {}) -> str:
     headers = data['payload']['headers']
     subject =  find(lambda item, i: item['name'] == 'Subject', headers)
