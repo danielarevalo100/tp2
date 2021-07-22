@@ -106,7 +106,8 @@ def crear_carpetas():
     print(basedir)
     ruta_ev = os.path.join(basedir, evaluacion)
     os.mkdir(ruta_ev)
-
+    if os.path.isdir(ruta_ev):
+        print("La carpeta ya existe")
     ruta_docentes = os.path.join(basedir, 'docentes.csv')
     ruta_alum_docentes = os.path.join(basedir,'docalum.csv')
     ruta_alumnos = os.path.join(basedir, 'alumnos.csv')
