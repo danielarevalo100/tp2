@@ -1,34 +1,36 @@
-import os
+import os.path
 
-from googleapiclient.discovery import Resource, build
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build, Resource
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
 
+SCOPES = ['https://www.googleapis.com/auth/drive']
 
-SCOPES = [
-    'https://www.googleapis.com/auth/gmail.readonly',
-    'https://www.googleapis.com/auth/gmail.send'
-]
+#Archivo generado para la api
+ARCHIVO_SECRET_CLIENT = 'client_secret_drive.json'
 
-# Archivo generado para la API
-ARCHIVO_SECRET_CLIENT = 'client_secret_492985352165-869k71di5fbrktrbs9dnleu7r0o2a36f.apps.googleusercontent.com.json'
+PERMISOS = ['https://www.googleapis.com/auth/drive']
 
+API_NAME = 'drive'
+
+API_VERSION = 'v3'
+
+PATH_TOKEN = 'token_drive.json'
 
 def cargar_credenciales() -> Credentials:
     credencial = None
 
-    if os.path.exists('token.json'):
-        with open('token.json', 'r'):
-            credencial = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if os.path.exists(PATH_TOKEN):
+        with open(PATH_TOKEN, 'r'):
+            credencial = Credentials.from_authorized_user_file(PATH_TOKEN, SCOPES)
 
     return credencial
 
 
 def guardar_credenciales(credencial: Credentials) -> None:
-    with open('token.json', 'w') as token:
+    with open(PATH_TOKEN, 'w') as token:
         token.write(credencial.to_json())
-
 
 def son_credenciales_invalidas(credencial: Credentials) -> bool:
     return not credencial or not credencial.valid
@@ -60,9 +62,13 @@ def generar_credenciales() -> Credentials:
     return credencial
 
 
-def obtener_servicio_gmail() -> Resource:
+def obtener_servicio() -> Resource:
     """
-    Creador de la conexion a la API Gmail
+    Creador de la conexion a la api drive.
+
+    :return: service
     """
-    return build('gmail', 'v1', credentials=generar_credenciales())
+    return build(API_NAME, API_VERSION, credentials=generar_credenciales())
+
+obtener_servicio()
 
