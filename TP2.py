@@ -44,64 +44,11 @@ def getAttachmentsIds(parts : dict = {}):
     return list(map(lambda item: item['body']['attachmentId'] ,partsWithAttachments))
 
 
-def main():
-    corte = False
-    #service = obtener_servicio()
-  
-    while not corte:
-        opcion = ingresar_opcion()
-
-        if opcion == 1:
-            pass
-        
-        if opcion == 2:
-            pass
-
-        if opcion == 3:
-            pass
-        
-        if opcion == 4:
-            pass
-
-        if opcion == 5:
-            pass
-        
-        if opcion == 6:
-<<<<<<< HEAD
-            crear_carpetas()
-
-=======
-            pass
->>>>>>> 3b6b11407bc5a7910fad9c33d181cddadd2d3874
-        if opcion == 7:
-            pass
-        
-        if opcion == 8:
-            corte = True
-
-    print('Hola')
-
-
-<<<<<<< HEAD
-def ingresarEntero(mensaje: str) -> int:
-    '''
-    Pre:  Recibe un input
-    Post: Retorna el valor solo si es validado por la condicion Is Numeric
-    '''
-
-    valor = input(mensaje)
-    while not (valor.isnumeric()):
-        valor = input("Error, ingrese el valor nuevamente: ")
-    valor = int(valor)
-
-    return valor
-
 def crear_carpetas():
     alumnos = []
     docentes = []
     docentes_alumnos = []
     basedir = os.path.dirname(os.path.abspath(__file__))
-
     print(basedir)
     ruta_ev = os.path.join(basedir, 'Evaluacion')
     os.mkdir(ruta_ev)
@@ -135,6 +82,58 @@ def crear_carpetas():
                 for alumno in alumnos:
                     if docentes_alumno[0] == docente[0] and docentes_alumno[1] == alumno[0]:
                         os.mkdir((os.path.join(ruta_ev, docente[0], alumno[0]+" "+alumno[1])))
+
+def main():
+    corte = False
+    #service = obtener_servicio()
+  
+    while not corte:
+        opcion = ingresar_opcion()
+
+        if opcion == 1:
+            pass
+        
+        if opcion == 2:
+            pass
+
+        if opcion == 3:
+            pass
+        
+        if opcion == 4:
+            pass
+
+        if opcion == 5:
+            pass
+        
+        if opcion == 6:
+            crear_carpetas()
+
+            pass
+>>>>>>> 3b6b11407bc5a7910fad9c33d181cddadd2d3874
+        if opcion == 7:
+            pass
+        
+        if opcion == 8:
+            corte = True
+
+    print('Hola')
+
+
+<<<<<<< HEAD
+def ingresarEntero(mensaje: str) -> int:
+    '''
+    Pre:  Recibe un input
+    Post: Retorna el valor solo si es validado por la condicion Is Numeric
+    '''
+
+    valor = input(mensaje)
+    while not (valor.isnumeric()):
+        valor = input("Error, ingrese el valor nuevamente: ")
+    valor = int(valor)
+
+    return valor
+
+
 
 main()
 >>>>>>> 3b6b11407bc5a7910fad9c33d181cddadd2d3874
