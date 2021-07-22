@@ -1,12 +1,15 @@
 <<<<<<< HEAD
 import os
 import csv
+from os import listdir
+from os.path import isfile, join
 =======
 from utils import * 
 from gmailUtils import *
 import base64
 import io 
 import zipfile
+DIRECTORIO_BASE = os.path.dirname(os.path.abspath(__file__))
 >>>>>>> 3b6b11407bc5a7910fad9c33d181cddadd2d3874
 
 def ingresar_opcion():
@@ -29,8 +32,38 @@ def ingresar_opcion():
     opcion = int(opcion)
     return opcion
 
+def listar_directorio(ruta):
+    archivos = [a for a in listdir(ruta) if isfile(join(ruta, a))]
+    return archivos
 
-
+def init():
+    print("ver archivos y carpetas")
+    opcion = input("selecciona una opcion c - crear carpeta y e - eliminar: ")
+    if opcion == "c":
+        nombre_carpeta = input("ingrese nombre carpeta: ")
+        directorio_carpeta = os.path.join(DIRECTORIO_BASE, nombre_carpeta)
+        if (os.path.isdir(directorio_carpeta)):
+            tipo = input("indique el tipo a - archivo y c - carpeta: ")
+        if tipo == "a":
+            archivo = input("indique el nombre del archivo: ")
+            manejador = open(DIRECTORIO_BASE + archivo, "w")
+            manejador.close()
+            print("ARCHIVO CREADO CON EXITO")
+        elif tipo == "c":
+            carpeta = input("indique el nombre de la carpeta: ")
+            carpeta = carpeta.strip()
+            os.mkdir(DIRECTORIO_BASE + carpeta)
+            print("carpeta", carpeta, "creado con exito")
+    elif opcion == "e":
+        nombre = input("ingrese nombre: ")
+        eliminar = input("indique archivo / carpeta eliminar :")
+        print(nombre+eliminar)
+        if (os.path.isfile(nombre+eliminar)):
+            os.remove(nombre+eliminar)
+            print("archivo", eliminar, "eliminar con exito")
+        elif (os.path.isdir(DIRECTORIO_BASE+eliminar)):
+            os.rmdir(nombre+eliminar)
+            print("carpeta", eliminar, "eliminar con exito")
 
 def getEmailSubject(data : dict = {}) -> str:
     headers = data['payload']['headers']
@@ -91,10 +124,14 @@ def main():
         opcion = ingresar_opcion()
 
         if opcion == 1:
-            pass
+            listar_directorio(ruta)
+            listado_archivos = listar_directorio(ruta)
+            print(listado_archivos)
+            print(len(listado_archivos))
         
         if opcion == 2:
-            pass
+            init()
+            
 
         if opcion == 3:
             pass
