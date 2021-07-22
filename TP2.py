@@ -119,20 +119,6 @@ def main():
     print('Hola')
 
 
-<<<<<<< HEAD
-def ingresarEntero(mensaje: str) -> int:
-    '''
-    Pre:  Recibe un input
-    Post: Retorna el valor solo si es validado por la condicion Is Numeric
-    '''
-
-    valor = input(mensaje)
-    while not (valor.isnumeric()):
-        valor = input("Error, ingrese el valor nuevamente: ")
-    valor = int(valor)
-
-    return valor
-
 
 
 main()
