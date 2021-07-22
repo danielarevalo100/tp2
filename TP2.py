@@ -100,11 +100,10 @@ def crear_carpetas():
     alumnos = []
     docentes = []
     docentes_alumnos = []
-    evaluacion = "AlgebraII"
     basedir = os.path.dirname(os.path.abspath(__file__))
 
     print(basedir)
-    ruta_ev = os.path.join(basedir, evaluacion)
+    ruta_ev = os.path.join(basedir, 'Evaluacion')
     os.mkdir(ruta_ev)
     if os.path.isdir(ruta_ev):
         print("La carpeta ya existe")
