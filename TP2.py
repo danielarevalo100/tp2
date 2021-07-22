@@ -97,35 +97,44 @@ def ingresarEntero(mensaje: str) -> int:
     return valor
 
 def crear_carpetas():
-    docentes = []
     alumnos = []
+    docentes = []
+    docentes_alumnos = []
     evaluacion = "AlgebraII"
+    basedir = os.path.dirname(os.path.abspath(__file__))
 
-    BASEDIR = os.path.dirname(os.path.abspath(__file__))
+    print(basedir)
+    ruta_ev = os.path.join(basedir, evaluacion)
+    os.mkdir(ruta_ev)
 
-    print(BASEDIR)
-    RUTA = os.path.join(BASEDIR, evaluacion)
-    os.mkdir(RUTA)
-    print(RUTA)
-    RUTADOC = os.path.join(BASEDIR, 'docentes.csv')
-    with open(RUTADOC, "r") as csv_file:
+    ruta_docentes = os.path.join(basedir, 'docentes.csv')
+    ruta_alum_docentes = os.path.join(basedir,'docalum.csv')
+    ruta_alumnos = os.path.join(basedir, 'alumnos.csv')
+
+
+    with open(ruta_docentes, "r") as csv_file:
         for linea in csv_file.readlines():
             linea = linea.rstrip()
             nombresDocentes = linea.split(',')
-            os.mkdir((os.path.join(RUTA, nombresDocentes[0])))
+            os.mkdir((os.path.join(ruta_ev, nombresDocentes[0])))
             docentes.append(nombresDocentes)
-    with open(r"C:\COSAS MUY IMPORTANTES\Facultad\python\docalum.csv", "r") as csv_file1:
+
+    with open(ruta_alumnos, 'r') as csv_file:
+        for linea in csv_file.readlines():
+            linea = linea.rstrip()
+            list_alumnos = linea.split(',')
+            alumnos.append(list_alumnos)
+
+    with open(ruta_alum_docentes, "r") as csv_file1:
         for linea2 in csv_file1.readlines():
             linea2 = linea2.rstrip()
             list_alumdoc = linea2.split(',')
-            alumnos.append(list_alumdoc)
-        print(alumnos)
+            docentes_alumnos.append(list_alumdoc)
         for docente in docentes:
-            for alumno in alumnos:
-                print(evaluacion, docente[0], alumno[1])
-                if alumno[0] == docente[0]:
-                    os.mkdir((os.path.join(RUTA, docente[0], alumno[1])))
-
+            for docentes_alumno in docentes_alumnos:
+                for alumno in alumnos:
+                    if docentes_alumno[0] == docente[0] and docentes_alumno[1] == alumno[0]:
+                        os.mkdir((os.path.join(ruta_ev, docente[0], alumno[0]+" "+alumno[1])))
 
 main()
 >>>>>>> 3b6b11407bc5a7910fad9c33d181cddadd2d3874
