@@ -12,7 +12,7 @@ SCOPES = [
 ]
 
 # Archivo generado para la API
-ARCHIVO_SECRET_CLIENT = 'client_secret_492985352165-869k71di5fbrktrbs9dnleu7r0o2a36f.apps.googleusercontent.com.json'
+ARCHIVO_SECRET_CLIENT = 'client_secret.json'
 
 
 def cargar_credenciales() -> Credentials:
