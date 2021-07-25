@@ -7,13 +7,16 @@ from gmailUtils import *
 import base64
 import io 
 import zipfile
-from  __future__ import print_function
-from quickstart import obtener_servicio
+#  from quickstart import obtener_servicio
 from service_gmail import obtener_servicio_gmail
 import shutil
 from googleapiclient.http import MediaIoBaseDownload
 import shutil
-from oauth2client import file, client, tools
+#from oauth2client import file, client, tools
+
+
+#Modulos
+from listar_archivos import listar_archivos
 
 def ingresar_opcion():
     print('\n')
@@ -172,13 +175,6 @@ def descargar_archivo():
         f.write(fh.read())
         f.close()
 
-def listar_directorio(ruta):
-    print('Listado de carpetas en local: ')
-    archivos = [a for a in listdir(ruta) if isfile(join(ruta, a))]
-    
-    print('\n')    
-    return archivos
-
 def init():
     print("ver archivos y carpetas")
     opcion = input("selecciona una opcion c - crear carpeta y e - eliminar: ")
@@ -224,6 +220,7 @@ def crear_carpetas():
     docentes = []
     docentes_alumnos = []
     service = obtener_servicio_gmail()
+
     # por ahora lo se hizo con el ID del mail que tiene el comprimido, luego se implementara una busqueda con el nombre de la evaluacion
     messageInfo = getMailById(service, '17ab6106a4a03c07')
     print(getEmailSubject(messageInfo))
@@ -279,41 +276,40 @@ def main():
         if opcion == 1:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
             if opcion2 == 1:
-                listar_directorio(ruta)
-                listado_archivos = listar_directorio(ruta)
-                print(listado_archivos)
-                print(len(listado_archivos))
+               listar_archivos() 
+
+                #print(listado_archivos)
 
             if opcion2 == 2:
                 recorrer_el_drive()
 
-        if opcion == 2:
-            opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
-            if opcion2 == 1:
-                init()
-            if opcion2 == 2:
-                opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
-                if opcion3 == 1:
-                    crear_archivo()
-                if opcion3 == 2:
-                    crear_carpeta()
+        #  if opcion == 2:
+        #      opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
+        #      if opcion2 == 1:
+        #          init()
+        #      if opcion2 == 2:
+        #          opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
+        #          if opcion3 == 1:
+        #              crear_archivo()
+        #          if opcion3 == 2:
+        #              crear_carpeta()
+        #
+        #  if opcion == 3:
+        #      subir_archivo()
+        #
+        #  if opcion == 4:
+        #      descargar_archivo()
+        #
+        #  if opcion == 5:
+        #      pass
+        #
+        #  if opcion == 6:
+        #      crear_carpetas()
+        #
+        #      pass
+        #  if opcion == 7:
+        #      pass
 
-        if opcion == 3:
-            subir_archivo()
-        
-        if opcion == 4:
-            descargar_archivo()
-
-        if opcion == 5:
-            pass
-        
-        if opcion == 6:
-            crear_carpetas()
-
-            pass
-        if opcion == 7:
-            pass
-        
         if opcion == 8:
             corte = True
 

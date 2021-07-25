@@ -1,4 +1,4 @@
-from service_gmail import obtener_servicio
+from service_gmail import obtener_servicio_gmail
 from utils import * 
 import base64
 import io 
