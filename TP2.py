@@ -306,6 +306,7 @@ def main():
         if opcion == 6:
             #crear_carpetas()
             service = obtener_servicio_gmail()
+            #comentario
             print(service.users().getProfile(userId='me').execute())
         
             pass
