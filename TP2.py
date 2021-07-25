@@ -304,11 +304,8 @@ def main():
             pass
         
         if opcion == 6:
-            #crear_carpetas()
-            service = obtener_servicio_gmail()
-            print(service.users().getProfile(userId='me').execute())
+            crear_carpetas()
         
-            pass
         if opcion == 7:
             pass
 
