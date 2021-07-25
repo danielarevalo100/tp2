@@ -147,21 +147,43 @@ def descargar_archivo():
     pre: debe haber archivos en el drive
     post: descarga el archivo que eliga el usuario del drive
     '''
-    archivos = obtener_servicio().files().list().execute()#Primero recorro el drive para que el usuario elija cual archivo quiere descargar
+    nombre_archivos = list()
+    archivos = obtener_servicio().files().list().execute()
+    print('\n')
     for archivo in archivos:
         if archivo == 'files':
             print('\n')
             for i in range(len(archivos[archivo])):
-                print(i+1,')  Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'] )
-    archivo_a_descargar = int(input('Ingrese el nro del archivo que quiere descargar: '))
-    archivo_a_descargar-=1
-    file_id = archivos[archivo][archivo_a_descargar]['id']
+                if archivos[archivo][i]['mimeType'] == 'application/vnd.google-apps.folder':
+                    print(i+1,') Carpeta = ','Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'] )
+                    query = f"parents = '{archivos[archivo][i]['id']}'"
+                    archivos_de_carpeta = obtener_servicio().files().list(q=query).execute()
+                    for archivo_carpeta in archivos_de_carpeta:
+                        if archivo_carpeta == 'files':
+                            for x in range(len(archivos_de_carpeta[archivo_carpeta])):
+                                print(' --- ',i+1,'.',x+1,')Archivo_de_carpeta:','Nombre: ',archivos_de_carpeta[archivo_carpeta][x]['name'],' - ',archivos_de_carpeta[archivo_carpeta][x]['mimeType'],' - id: ',archivos_de_carpeta[archivo_carpeta][x]['id'])
+                                nombre_archivos.append(archivos_de_carpeta[archivo_carpeta][x]['name'])
+                elif archivos[archivo][i]['name'] not in nombre_archivos:
+                    print(i+1,') Archivo =','Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'])
+
+    id_correcto = False
+    while not id_correcto:#Analizo que el id sea de un archivo y no una carpeta
+        id_archivo = input('Copie y pegue el nro de id del archivo que desea descargar(no carpeta): ')
+        for i in range(len(archivos['files'])):
+            if archivos['files'][i]['id'] == id_archivo:
+                if archivos[archivo][i]['mimeType'] == 'application/vnd.google-apps.folder':
+                    print('El id que pego corresponde a una carpeta, copie el de un archivo')
+                    id_archivo = input('Copie y pegue el nro de id del archivo que desea descargar(no carpeta): ')
+                else:
+                    archivo_elejido = archivos['files'][i]
+                    id_correcto = True
     opcionx = input('Desea modificar el nombre del archivo que va a guardar?(s|n): ')
     if opcionx == 's':
         nombre_archivo =input('Ingrese el nombre con el que quiere guardar el archivo: ')
     else:
-        nombre_archivo = archivos[archivo][archivo_a_descargar]['name']
-    request = obtener_servicio().files().get_media(fileId=file_id)
+        nombre_archivo = archivo_elejido['name']
+
+    request = obtener_servicio().files().get_media(fileId=id_archivo)
     fh = io.BytesIO()
     downloader = MediaIoBaseDownload(fh, request)
     done = False
@@ -170,10 +192,41 @@ def descargar_archivo():
         print("Download %d%%." % int(status.progress() * 100))
 
     fh.seek(0)
-
     with open(os.path.join('./Archivos_descargados', nombre_archivo), 'wb') as f:# Te guarda los archivos que descargas en la carpeta 'Archivos descargados'
         f.write(fh.read())
         f.close()
+# def descargar_archivo():
+#     '''
+#     pre: debe haber archivos en el drive
+#     post: descarga el archivo que eliga el usuario del drive
+#     '''
+#     archivos = obtener_servicio().files().list().execute()#Primero recorro el drive para que el usuario elija cual archivo quiere descargar
+#     for archivo in archivos:
+#         if archivo == 'files':
+#             print('\n')
+#             for i in range(len(archivos[archivo])):
+#                 print(i+1,')  Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'] )
+#     archivo_a_descargar = int(input('Ingrese el nro del archivo que quiere descargar: '))
+#     archivo_a_descargar-=1
+#     file_id = archivos[archivo][archivo_a_descargar]['id']
+#     opcionx = input('Desea modificar el nombre del archivo que va a guardar?(s|n): ')
+#     if opcionx == 's':
+#         nombre_archivo =input('Ingrese el nombre con el que quiere guardar el archivo: ')
+#     else:
+#         nombre_archivo = archivos[archivo][archivo_a_descargar]['name']
+#     request = obtener_servicio().files().get_media(fileId=file_id)
+#     fh = io.BytesIO()
+#     downloader = MediaIoBaseDownload(fh, request)
+#     done = False
+#     while done is False:
+#         status, done = downloader.next_chunk()
+#         print("Download %d%%." % int(status.progress() * 100))
+
+#     fh.seek(0)
+
+#     with open(os.path.join('./Archivos_descargados', nombre_archivo), 'wb') as f:# Te guarda los archivos que descargas en la carpeta 'Archivos descargados'
+#         f.write(fh.read())
+#         f.close()
 
 def init():
     print("ver archivos y carpetas")
