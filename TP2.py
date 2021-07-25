@@ -7,7 +7,7 @@ from gmailUtils import *
 import base64
 import io 
 import zipfile
-#  from quickstart import obtener_servicio
+from quickstart import obtener_servicio
 from service_gmail import obtener_servicio_gmail
 import shutil
 from googleapiclient.http import MediaIoBaseDownload
@@ -283,32 +283,32 @@ def main():
             if opcion2 == 2:
                 recorrer_el_drive()
 
-        #  if opcion == 2:
-        #      opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
-        #      if opcion2 == 1:
-        #          init()
-        #      if opcion2 == 2:
-        #          opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
-        #          if opcion3 == 1:
-        #              crear_archivo()
-        #          if opcion3 == 2:
-        #              crear_carpeta()
-        #
-        #  if opcion == 3:
-        #      subir_archivo()
-        #
-        #  if opcion == 4:
-        #      descargar_archivo()
-        #
-        #  if opcion == 5:
-        #      pass
-        #
-        #  if opcion == 6:
-        #      crear_carpetas()
-        #
-        #      pass
-        #  if opcion == 7:
-        #      pass
+        if opcion == 2:
+            opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
+            if opcion2 == 1:
+                init()
+            if opcion2 == 2:
+                opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
+                if opcion3 == 1:
+                    crear_archivo()
+                if opcion3 == 2:
+                    crear_carpeta()
+        
+        if opcion == 3:
+            subir_archivo()
+        
+        if opcion == 4:
+            descargar_archivo()
+        
+        if opcion == 5:
+            pass
+        
+        if opcion == 6:
+            crear_carpetas()
+        
+            pass
+        if opcion == 7:
+            pass
 
         if opcion == 8:
             corte = True
