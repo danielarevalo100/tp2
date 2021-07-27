@@ -18,6 +18,9 @@ def obtener_y_descomprimir():
     z = zipfile.ZipFile(io.BytesIO(files))
     z.extractall()
     return obtenerAsunto(messageInfo)
+
+
+
 def list_doc(basedir):
     docentes = []
     ruta_docentes = os.path.join(basedir, 'docentes.csv')
@@ -55,8 +58,10 @@ def list_docalum(basedir):
 def crear_carpetas():
     basedir = os.path.dirname(os.path.abspath(__file__))
     print(basedir)
-    evaluacion = "Algebra"
-    ruta_ev = os.path.join(basedir, evaluacion)
+
+    asunto = obtener_y_descomprimir()
+    print(basedir)
+    ruta_ev = os.path.join(basedir, asunto)
     os.mkdir(ruta_ev)
     if os.path.isdir(ruta_ev):
         print("La carpeta ya existe")
