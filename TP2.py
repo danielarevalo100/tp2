@@ -207,32 +207,46 @@ def sincronizacion(ruta):
             if archivo_remoto == 'files':
                 for i in range(len(archivos_remotos[archivo_remoto])):
                     if archivo_local == archivos_remotos[archivo_remoto][i]['name']:
-                        print('Ultima mod local: ', ultima_modificacion_local(archivo_local))
-                        print('Ulitma mod remoto: ', archivos_remotos[archivo_remoto][i]['modifiedTime'])
-
-                        # if ultima_modificacion_local(archivo_local) > archivos_remotos[archivo_remoto][i]['modifiedTime']:
-                        #     contenido_archivo = MediaFileUpload(archivo_local, mimetype=archivos_remotos[archivo_remoto][i]['mimeType'])
-                        #     obtener_servicio().files().update(fileId=archivos_remotos[archivo_remoto][i]['modifiedTime'], media_body=contenido_archivo)
+                        lista_fecha = archivos_remotos[archivo_remoto][i]['modifiedTime'].split('.')
+                        lista_fecha.pop(1)
+                        ultima_modificacion_remoto = (''.join(lista_fecha))
+                        ultima_modificacion_remoto = datetime.strptime(ultima_modificacion_remoto, '%Y-%m-%dT%H:%M:%S')
                         
-                        # elif ultima_modificacion_local(archivo_local) < archivos_remotos[archivo_remoto][i]['modifiedTime']:
-                        #     if (os.path.isfile(archivo_local)): # elimina el archivo
-                        #         os.remove(archivo_local)
+                        if ultima_modificacion_local(archivo_local) > ultima_modificacion_remoto:
+                            contenido_archivo = MediaFileUpload(archivo_local, mimetype=archivos_remotos[archivo_remoto][i]['mimeType'])
+                            obtener_servicio().files().update(fileId=archivos_remotos[archivo_remoto][i]['modifiedTime'], media_body=contenido_archivo)
+                            print('hola')
 
-                        #         request = obtener_servicio().files().get_media(fileId=id_archivo)#Descarga archivo
-                        #         fh = io.BytesIO()
-                        #         downloader = MediaIoBaseDownload(fh, request)
-                        #         done = False
-                        #         while done is False:
-                        #             status, done = downloader.next_chunk()
-                        #             print("Download %d%%." % int(status.progress() * 100))
-                        #         fh.seek(0)
-                        #         with open(os.path.join('./Archivos_descargados', nombre_archivo), 'wb') as f:# Te guarda los archivos que descargas en la carpeta 'Archivos descargados'
-                        #             f.write(fh.read())
-                        #             f.close()
-                        # elif ultima_modificacion_local(archivo_local) == archivos_remotos[archivo_remoto][i]['modifiedTime']:
-                        #     print('No se modificaron')
+                        elif ultima_modificacion_local(archivo_local) < ultima_modificacion_remoto:
+                            print('chau')
+                            if (os.path.isfile(archivo_local)): # elimina el archivo
+                                os.remove(archivo_local)
 
-def init():
+                                request = obtener_servicio().files().get_media(fileId=id_archivo)#Descarga archivo
+                                fh = io.BytesIO()
+                                downloader = MediaIoBaseDownload(fh, request)
+                                done = False
+                                while done is False:
+                                    status, done = downloader.next_chunk()
+                                    print("Download %d%%." % int(status.progress() * 100))
+                                fh.seek(0)
+                                with open(os.path.join('./Archivos_descargados', nombre_archivo), 'wb') as f:# Te guarda los archivos que descargas en la carpeta 'Archivos descargados'
+                                    f.write(fh.read())
+                                    f.close()
+                        elif ultima_modificacion_local(archivo_local) == archivos_remotos[archivo_remoto][i]['modifiedTime']:
+                            print('No se modificaron')
+
+                    else:
+                        #Debe subir el archivo al remoto
+                        metadata = {'name': archivo_local} 
+                        mimeType = None #Pongo = none para que me tome el tipo de archivo como viene, y no me lo cambie a tipo google docs
+                        if mimeType:
+                            metadata['mimeType'] = mimeType
+                        res = obtener_servicio().files().create(body=metadata, media_body=archivo_local).execute()
+                        if res:
+                            print('Se subio el archivo: ', archivo_local, res['mimeType'])
+
+def crear_carpeta_local():
     print("ver archivos y carpetas")
     opcion = input("selecciona una opcion c - crear carpeta y e - eliminar: ")
     if opcion == "c":
@@ -293,7 +307,7 @@ def main():
         if opcion == 2:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
             if opcion2 == 1:
-                init()
+                crear_carpeta_local()
             if opcion2 == 2:
                 opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
                 if opcion3 == 1:
