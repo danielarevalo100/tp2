@@ -1,7 +1,8 @@
 from os import path, listdir
 from service_gmail import obtener_servicio_gmail
 from gmailUtils import *
-from utils import ingresar_opcion
+from utils import ingresar_opcion, find
+from crear_carpetas import list_docalum
 
 def actualizar_entregas(basedir) :
     service = obtener_servicio_gmail()
@@ -9,7 +10,9 @@ def actualizar_entregas(basedir) :
 
     #seleccion de que evaluacion se va a recibir
     directiorios = obtener_directorios(basedir)
-    indiceEvaluacion = ingresar_opcion(directiorios)
+    menu = list(map(lambda x: f'{x[0]}) {x[1]}', enumerate(obtener_directorios(basedir))))
+
+    indiceEvaluacion = ingresar_opcion(menu)
     evaluacion = directiorios[indiceEvaluacion]
     rutaEvaluacion = path.join(basedir, evaluacion)
 
@@ -36,9 +39,17 @@ def actualizar_entregas(basedir) :
                         if not aux in nombre:
                             error = True
                     if error:
-                        enviarMail(service, alumno[2], 'Su entrega no tiene los nombres de archivos correctos', 'ERROR')
+                        #enviarMail(service, alumno[2], 'Su entrega no tiene los nombres de archivos correctos', 'ERROR')
+                        pass
                     else:
                         print('todo buenisimo')
+                        datos = list_docalum(basedir)
+                        print(datos)
+                        relacion = find(lambda dato, i: dato[1] == alumno[0], datos)
+                        if relacion:
+                            rutaDocente = path.join(rutaEvaluacion, relacion[0])
+                            rutaAlumno = path.join(rutaDocente, f'{alumno[0]} {alumno[1]}')
+                            z.extractall(rutaAlumno)
 
 
             else : 

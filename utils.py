@@ -12,7 +12,7 @@ def ingresar_opcion(menu):
     for i in range(len(menu)):
         print(menu[i])
     opcion = input('Que opcion desea elegir?: ')
-    while not opcion.isnumeric() or int(opcion)<1 or int(opcion)>len(menu):
+    while not opcion.isnumeric() or int(opcion)<0 or int(opcion)>len(menu):
         opcion = input('Eliga una opcion correcta: ')
     opcion = int(opcion)
     return opcion

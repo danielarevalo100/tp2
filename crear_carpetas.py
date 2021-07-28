@@ -19,22 +19,6 @@ def obtener_y_descomprimir():
     z.extractall()
     return obtenerAsunto(messageInfo)
 
-def crear_carpetas(basedir):
-    alumnos = []
-    docentes_alumnos = []
-
-    asunto = obtener_y_descomprimir()
-    print(basedir)
-    ruta_ev = os.path.join(basedir, asunto)
-    os.mkdir(ruta_ev)
-    if os.path.isdir(ruta_ev):
-        print("La carpeta ya existe")
-    ruta_docentes = os.path.join(basedir, 'docentes.csv')
-    ruta_alum_docentes = os.path.join(basedir,'docente-alumnos.csv')
-    ruta_alumnos = os.path.join(basedir, 'alumnos.csv')
-
-    docentes = obtenerDocentes(ruta_docentes)
-
 def list_doc(basedir):
     docentes = []
     ruta_docentes = os.path.join(basedir, 'docentes.csv')
@@ -58,7 +42,7 @@ def list_alum(basedir):
 
 
 def list_docalum(basedir):
-    ruta_alum_docentes = os.path.join(basedir, 'docalum.csv')
+    ruta_alum_docentes = os.path.join(basedir, 'docente-alumnos.csv')
     docentes_alumnos = []
     with open(ruta_alum_docentes, "r") as csv_file1:
         for linea2 in csv_file1.readlines():
@@ -67,18 +51,6 @@ def list_docalum(basedir):
             docentes_alumnos.append(list_alumdoc)
     return docentes_alumnos
 
-
-def crear_carpetas(basedir):
-    #basedir = os.path.dirname(os.path.abspath(__file__))
-    print(basedir)
-
-    asunto = obtener_y_descomprimir()
-    print(basedir)
-    ruta_ev = os.path.join(basedir, asunto)
-    os.mkdir(ruta_ev)
-    if os.path.isdir(ruta_ev):
-        print("La carpeta ya existe")
-
 def crear_carpetas(basedir):
     asunto = obtener_y_descomprimir()
     print(basedir)
@@ -86,10 +58,6 @@ def crear_carpetas(basedir):
     os.mkdir(ruta_ev)
     if os.path.isdir(ruta_ev):
         print("La carpeta ya existe")
-
-    list_alum(basedir)
-    list_docalum(basedir)
-    list_doc(basedir)
 
     for i in range(len(list_doc(basedir))):
         os.mkdir((os.path.join(ruta_ev, list_doc(basedir)[i][0])))
