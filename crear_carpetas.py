@@ -19,8 +19,6 @@ def obtener_y_descomprimir():
     z.extractall()
     return obtenerAsunto(messageInfo)
 
-
-
 def list_doc(basedir):
     docentes = []
     ruta_docentes = os.path.join(basedir, 'docentes.csv')
@@ -55,8 +53,8 @@ def list_docalum(basedir):
     return docentes_alumnos
 
 
-def crear_carpetas():
-    basedir = os.path.dirname(os.path.abspath(__file__))
+def crear_carpetas(basedir):
+    #basedir = os.path.dirname(os.path.abspath(__file__))
     print(basedir)
 
     asunto = obtener_y_descomprimir()
@@ -76,6 +74,3 @@ def crear_carpetas():
             for j in range(len(list_alum(basedir))):
                 if list_docalum(basedir)[k][0] == list_doc(basedir)[i][0] and list_docalum(basedir)[k][1] == list_alum(basedir)[j][0]:
                     os.mkdir((os.path.join(ruta_ev, list_doc(basedir)[i][0], list_alum(basedir)[j][0] + " " + list_alum(basedir)[j][1])))
-
-
-crear_carpetas()
