@@ -7,25 +7,15 @@ def clear():
         _ = system('clear') 
 
 
-def printMenu( menu ) -> None:
-    selectedItem = 0
-    optionSelected = False
-
-    
-    while not optionSelected: 
-        clear()
-        for i in range(len(menu)):
-            print( menu[i]  + '>>>' if selectedItem == i else menu[i])
-
-        value = input('Usa w/s para subir o bajar, luego selecciona con enter')
-
-        if value == 's' and selectedItem < len(menu) -1 :
-            selectedItem += 1
-        if value == 'w' and selectedItem != 0:
-            selectedItem -= 1
-        if value == '':
-            optionSelected = True
-    return selectedItem
+def ingresar_opcion(menu):
+    print('\n')
+    for i in range(len(menu)):
+        print(menu[i])
+    opcion = input('Que opcion desea elegir?: ')
+    while not opcion.isnumeric() or int(opcion)<1 or int(opcion)>len(menu):
+        opcion = input('Eliga una opcion correcta: ')
+    opcion = int(opcion)
+    return opcion
 
 def find(callback, arr) :
     for i in range(len(arr)):

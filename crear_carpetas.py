@@ -21,7 +21,6 @@ def obtener_y_descomprimir():
 
 def crear_carpetas(basedir):
     alumnos = []
-    docentes = []
     docentes_alumnos = []
 
     asunto = obtener_y_descomprimir()
@@ -33,6 +32,8 @@ def crear_carpetas(basedir):
     ruta_docentes = os.path.join(basedir, 'docentes.csv')
     ruta_alum_docentes = os.path.join(basedir,'docente-alumnos.csv')
     ruta_alumnos = os.path.join(basedir, 'alumnos.csv')
+
+    docentes = obtenerDocentes(ruta_docentes)
 
     with open(ruta_docentes, "r") as csv_file:
         for linea in csv_file.readlines():
@@ -60,3 +61,12 @@ def crear_carpetas(basedir):
 
     print('las carpetas se han creado exitosamente')
 
+def obtenerDocentes(ruta_docentes):
+    docentes = []
+    with open(ruta_docentes, "r") as csv_file:
+        for linea in csv_file.readlines():
+            linea = linea.rstrip()
+            nombresDocentes = linea.split(',')
+            os.mkdir((os.path.join(ruta_ev, nombresDocentes[0])))
+            docentes.append(nombresDocentes)
+        return docentes
