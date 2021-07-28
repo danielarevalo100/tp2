@@ -19,10 +19,45 @@ def obtener_y_descomprimir():
     z.extractall()
     return obtenerAsunto(messageInfo)
 
-def crear_carpetas(basedir):
-    alumnos = []
+
+
+def list_doc(basedir):
     docentes = []
+    ruta_docentes = os.path.join(basedir, 'docentes.csv')
+    with open(ruta_docentes, "r") as csv_file:
+        for linea in csv_file.readlines():
+            linea = linea.rstrip()
+            nombresDocentes = linea.split(',')
+            docentes.append(nombresDocentes)
+
+    return docentes
+
+
+def list_alum(basedir):
+    alumnos = []
+    ruta_alumnos = os.path.join(basedir, 'alumnos.csv')
+    with open(ruta_alumnos, 'r') as csv_file:
+        for linea in csv_file.readlines():
+            linea = linea.rstrip()
+            list_alumnos = linea.split(',')
+            alumnos.append(list_alumnos)
+    return alumnos
+
+
+def list_docalum(basedir):
+    ruta_alum_docentes = os.path.join(basedir, 'docalum.csv')
     docentes_alumnos = []
+    with open(ruta_alum_docentes, "r") as csv_file1:
+        for linea2 in csv_file1.readlines():
+            linea2 = linea2.rstrip()
+            list_alumdoc = linea2.split(',')
+            docentes_alumnos.append(list_alumdoc)
+    return docentes_alumnos
+
+
+def crear_carpetas():
+    basedir = os.path.dirname(os.path.abspath(__file__))
+    print(basedir)
 
     asunto = obtener_y_descomprimir()
     print(basedir)
@@ -30,33 +65,17 @@ def crear_carpetas(basedir):
     os.mkdir(ruta_ev)
     if os.path.isdir(ruta_ev):
         print("La carpeta ya existe")
-    ruta_docentes = os.path.join(basedir, 'docentes.csv')
-    ruta_alum_docentes = os.path.join(basedir,'docente-alumnos.csv')
-    ruta_alumnos = os.path.join(basedir, 'alumnos.csv')
 
-    with open(ruta_docentes, "r") as csv_file:
-        for linea in csv_file.readlines():
-            linea = linea.rstrip()
-            nombresDocentes = linea.split(',')
-            os.mkdir((os.path.join(ruta_ev, nombresDocentes[0])))
-            docentes.append(nombresDocentes)
+    list_alum(basedir)
+    list_docalum(basedir)
+    list_doc(basedir)
 
-    with open(ruta_alumnos, 'r') as csv_file:
-        for linea in csv_file.readlines():
-            linea = linea.rstrip()
-            list_alumnos = linea.split(',')
-            alumnos.append(list_alumnos)
+    for i in range(len(list_doc(basedir))):
+        os.mkdir((os.path.join(ruta_ev, list_doc(basedir)[i][0])))
+        for k in range (len(list_docalum(basedir))):
+            for j in range(len(list_alum(basedir))):
+                if list_docalum(basedir)[k][0] == list_doc(basedir)[i][0] and list_docalum(basedir)[k][1] == list_alum(basedir)[j][0]:
+                    os.mkdir((os.path.join(ruta_ev, list_doc(basedir)[i][0], list_alum(basedir)[j][0] + " " + list_alum(basedir)[j][1])))
 
-    with open(ruta_alum_docentes, "r") as csv_file1:
-        for linea2 in csv_file1.readlines():
-            linea2 = linea2.rstrip()
-            list_alumdoc = linea2.split(',')
-            docentes_alumnos.append(list_alumdoc)
-        for docente in docentes:
-            for docentes_alumno in docentes_alumnos:
-                for alumno in alumnos:
-                    if docentes_alumno[0] == docente[0] and docentes_alumno[1] == alumno[0]:
-                        os.mkdir((os.path.join(ruta_ev, docente[0], alumno[0]+" "+alumno[1])))
 
-    print('las carpetas se han creado exitosamente')
-
+crear_carpetas()
