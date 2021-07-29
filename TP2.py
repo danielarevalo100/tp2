@@ -19,7 +19,7 @@ import shutil
 from listar_archivos import listar_archivos
 from crear_carpetas import crear_carpetas
 from actualizar_entregas import actualizar_entregas
-
+DIRECTORIO_BASE = os.path.dirname(os.path.abspath(__file__))
 menu = (
     '1)Listar archivos de la carpeta actual.',
     '2)Crear un archivo.',
@@ -252,28 +252,33 @@ def crear_carpeta_local():
     if opcion == "c":
         nombre_carpeta = input("ingrese nombre carpeta: ")
         directorio_carpeta = os.path.join(DIRECTORIO_BASE, nombre_carpeta)
+        print(directorio_carpeta)
         if (os.path.isdir(directorio_carpeta)):
             tipo = input("indique el tipo a - archivo y c - carpeta: ")
-        if tipo == "a":
-            archivo = input("indique el nombre del archivo: ")
-            manejador = open(DIRECTORIO_BASE + archivo, "w")
-            manejador.close()
-            print("ARCHIVO CREADO CON EXITO")
-        elif tipo == "c":
-            carpeta = input("indique el nombre de la carpeta: ")
-            carpeta = carpeta.strip()
-            os.mkdir(DIRECTORIO_BASE + carpeta)
-            print("carpeta", carpeta, "creado con exito")
+            if tipo == "a":
+                archivo = input("indique el nombre del archivo: ")
+                manejador = open(DIRECTORIO_BASE + archivo, "w")
+                manejador.close()
+                print("ARCHIVO CREADO CON EXITO")
+            elif tipo == "c":
+                carpeta = input("indique el nombre de la carpeta: ")
+                carpeta = carpeta.strip()
+                print(DIRECTORIO_BASE + carpeta)
+                os.mkdir(DIRECTORIO_BASE + carpeta)
+                print("carpeta", carpeta, "creado con exito")
     elif opcion == "e":
         nombre = input("ingrese nombre: ")
         eliminar = input("indique archivo / carpeta eliminar :")
-        print(nombre+eliminar)
-        if (os.path.isfile(nombre+eliminar)):
-            os.remove(nombre+eliminar)
-            print("archivo", eliminar, "eliminar con exito")
-        elif (os.path.isdir(DIRECTORIO_BASE+eliminar)):
-            os.rmdir(nombre+eliminar)
-            print("carpeta", eliminar, "eliminar con exito")
+        k = DIRECTORIO_BASE + eliminar 
+        print(k)
+        if (os.path.isfile(k)): # para archivo
+            os.remove(k)
+            print("archivo", k, "eliminada con exito")
+        elif (os.path.isdir(k)): #para carpeta
+            os.rmdir(k)
+            print("carpeta", k, "eliminada con exito")
+        else:
+            print("volver a ejecutar")
 
 def getEmailSubject(data : dict = {}) -> str:
     headers = data['payload']['headers']
