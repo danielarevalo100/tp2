@@ -210,7 +210,8 @@ def sincronizacion(ruta):
                         lista_fecha = archivos_remotos[archivo_remoto][i]['modifiedTime'].split('.')
                         lista_fecha.pop(1)
                         ultima_modificacion_remoto = (''.join(lista_fecha))
-                        ultima_modificacion_remoto = datetime.strptime(ultima_modificacion_remoto, '%Y-%m-%dT%H:%M:%S')
+                        #arregar_huso = timedelta(hours = 2)
+                        #ultima_modificacion_remoto = datetime.strptime(ultima_modificacion_remoto, '%Y-%m-%dT%H:%M:%S') - arregar_huso
                         
                         if ultima_modificacion_local(archivo_local) > ultima_modificacion_remoto:
                             contenido_archivo = MediaFileUpload(archivo_local, mimetype=archivos_remotos[archivo_remoto][i]['mimeType'])
