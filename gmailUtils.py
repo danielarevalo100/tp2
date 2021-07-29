@@ -16,9 +16,12 @@ def obtenerAsunto(data : dict = {}) -> str:
     return ''
 
 def obtenerIdsDeAdjuntos(data : dict = {}):
-    parts = data['payload']['parts']
-    partsWithAttachments = list(filter(lambda item: 'attachmentId' in item['body'], parts))
-    return list(map(lambda item: item['body']['attachmentId'] ,partsWithAttachments))
+    if 'payload' in data and 'parts' in data['payload']:
+        parts = data['payload']['parts']
+        partsWithAttachments = list(filter(lambda item: 'attachmentId' in item['body'], parts))
+        return list(map(lambda item: item['body']['attachmentId'] ,partsWithAttachments))
+    else: 
+        return []
 
 def enviarMail(service, address, text, subject):
     remitente = service.users().getProfile(userId='me').execute()

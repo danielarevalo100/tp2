@@ -20,25 +20,16 @@ from listar_archivos import listar_archivos
 from crear_carpetas import crear_carpetas
 from actualizar_entregas import actualizar_entregas
 
-def ingresar_opcion():
-    print('\n')
-    menu = [
-        '1)Listar archivos de la carpeta actual.',
-        '2)Crear un archivo.',
-        '3)Subir un archivo.',
-        '4)Descargar un archivo.',
-        '5)Sincronizar.',
-        '6)Generar carpetas de una evaluaciion.',
-        '7)Actualizar entregas de alumnos viıa mail.',
-        '8)Salir.'
-    ]
-    for i in range(len(menu)):
-        print(menu[i])
-    opcion = input('Que opcion desea elegir?: ')
-    while not opcion.isnumeric() or int(opcion)<1 or int(opcion)>9:
-        opcion = input('Eliga una opcion correcta: ')
-    opcion = int(opcion)
-    return opcion
+menu = (
+    '1)Listar archivos de la carpeta actual.',
+    '2)Crear un archivo.',
+    '3)Subir un archivo.',
+    '4)Descargar un archivo.',
+    '5)Sincronizar.',
+    '6)Generar carpetas de una evaluaciion.',
+    '7)Actualizar entregas de alumnos viıa mail.',
+    '8)Salir.'
+)
 
 def crear_archivo():
     '''
@@ -197,40 +188,65 @@ def descargar_archivo():
     with open(os.path.join('./Archivos_descargados', nombre_archivo), 'wb') as f:# Te guarda los archivos que descargas en la carpeta 'Archivos descargados'
         f.write(fh.read())
         f.close()
-# def descargar_archivo():
-#     '''
-#     pre: debe haber archivos en el drive
-#     post: descarga el archivo que eliga el usuario del drive
-#     '''
-#     archivos = obtener_servicio().files().list().execute()#Primero recorro el drive para que el usuario elija cual archivo quiere descargar
-#     for archivo in archivos:
-#         if archivo == 'files':
-#             print('\n')
-#             for i in range(len(archivos[archivo])):
-#                 print(i+1,')  Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'] )
-#     archivo_a_descargar = int(input('Ingrese el nro del archivo que quiere descargar: '))
-#     archivo_a_descargar-=1
-#     file_id = archivos[archivo][archivo_a_descargar]['id']
-#     opcionx = input('Desea modificar el nombre del archivo que va a guardar?(s|n): ')
-#     if opcionx == 's':
-#         nombre_archivo =input('Ingrese el nombre con el que quiere guardar el archivo: ')
-#     else:
-#         nombre_archivo = archivos[archivo][archivo_a_descargar]['name']
-#     request = obtener_servicio().files().get_media(fileId=file_id)
-#     fh = io.BytesIO()
-#     downloader = MediaIoBaseDownload(fh, request)
-#     done = False
-#     while done is False:
-#         status, done = downloader.next_chunk()
-#         print("Download %d%%." % int(status.progress() * 100))
 
-#     fh.seek(0)
+def ultima_modificacion_local(ruta_archivo):
+    '''
+    pre: se le manda una ruta de un archivo especifico
+    post: devuelve la fecha de ultima modificacion de ese archivo
+    ''' 
+    estado = os.stat(ruta_archivo)
+    fecha = time.localtime(estado.st_mtime)
+    fecha = datetime(fecha[0], fecha[1], fecha[2], fecha[3], fecha[4], fecha[5])
+    return fecha
 
-#     with open(os.path.join('./Archivos_descargados', nombre_archivo), 'wb') as f:# Te guarda los archivos que descargas en la carpeta 'Archivos descargados'
-#         f.write(fh.read())
-#         f.close()
+def sincronizacion(ruta):
+    archivos_remotos = obtener_servicio().files().list(fields='files(name,modifiedTime,id,mimeType)').execute()
+    archivos_locales = [a for a in listdir(ruta) if isfile(join(ruta, a))]
+    for archivo_local in archivos_locales:
+        for archivo_remoto in archivos_remotos:
+            if archivo_remoto == 'files':
+                for i in range(len(archivos_remotos[archivo_remoto])):
+                    if archivo_local == archivos_remotos[archivo_remoto][i]['name']:
+                        lista_fecha = archivos_remotos[archivo_remoto][i]['modifiedTime'].split('.')
+                        lista_fecha.pop(1)
+                        ultima_modificacion_remoto = (''.join(lista_fecha))
+                        ultima_modificacion_remoto = datetime.strptime(ultima_modificacion_remoto, '%Y-%m-%dT%H:%M:%S')
+                        
+                        if ultima_modificacion_local(archivo_local) > ultima_modificacion_remoto:
+                            contenido_archivo = MediaFileUpload(archivo_local, mimetype=archivos_remotos[archivo_remoto][i]['mimeType'])
+                            obtener_servicio().files().update(fileId=archivos_remotos[archivo_remoto][i]['modifiedTime'], media_body=contenido_archivo)
+                            print('hola')
 
-def init():
+                        elif ultima_modificacion_local(archivo_local) < ultima_modificacion_remoto:
+                            print('chau')
+                            if (os.path.isfile(archivo_local)): # elimina el archivo
+                                os.remove(archivo_local)
+
+                                request = obtener_servicio().files().get_media(fileId=id_archivo)#Descarga archivo
+                                fh = io.BytesIO()
+                                downloader = MediaIoBaseDownload(fh, request)
+                                done = False
+                                while done is False:
+                                    status, done = downloader.next_chunk()
+                                    print("Download %d%%." % int(status.progress() * 100))
+                                fh.seek(0)
+                                with open(os.path.join('./Archivos_descargados', nombre_archivo), 'wb') as f:# Te guarda los archivos que descargas en la carpeta 'Archivos descargados'
+                                    f.write(fh.read())
+                                    f.close()
+                        elif ultima_modificacion_local(archivo_local) == archivos_remotos[archivo_remoto][i]['modifiedTime']:
+                            print('No se modificaron')
+
+                    else:
+                        #Debe subir el archivo al remoto
+                        metadata = {'name': archivo_local} 
+                        mimeType = None #Pongo = none para que me tome el tipo de archivo como viene, y no me lo cambie a tipo google docs
+                        if mimeType:
+                            metadata['mimeType'] = mimeType
+                        res = obtener_servicio().files().create(body=metadata, media_body=archivo_local).execute()
+                        if res:
+                            print('Se subio el archivo: ', archivo_local, res['mimeType'])
+
+def crear_carpeta_local():
     print("ver archivos y carpetas")
     opcion = input("selecciona una opcion c - crear carpeta y e - eliminar: ")
     if opcion == "c":
@@ -276,7 +292,7 @@ def main():
     basedir = os.path.dirname(os.path.abspath(__file__))
   
     while not corte:
-        opcion = ingresar_opcion()
+        opcion = ingresar_opcion(menu)
 
         if opcion == 1:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
@@ -291,7 +307,7 @@ def main():
         if opcion == 2:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
             if opcion2 == 1:
-                init()
+                crear_carpeta_local()
             if opcion2 == 2:
                 opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
                 if opcion3 == 1:
@@ -306,8 +322,8 @@ def main():
             descargar_archivo()
         
         if opcion == 5:
-            pass
-        
+            sincronizacion(basedir)
+
         if opcion == 6:
             crear_carpetas(basedir)
 
@@ -316,8 +332,6 @@ def main():
 
         if opcion == 8:
             corte = True
-
-
 
 
 main()
