@@ -247,35 +247,40 @@ def sincronizacion(ruta):
                         if res:
                             print('Se subio el archivo: ', archivo_local, res['mimeType'])
 
-def crear_carpeta_local():
+def crear_carpeta_local(basedir):
+    
     print("ver archivos y carpetas")
     opcion = input("selecciona una opcion c - crear carpeta y e - eliminar: ")
     if opcion == "c":
         nombre_carpeta = input("ingrese nombre carpeta: ")
-        directorio_carpeta = os.path.join(DIRECTORIO_BASE, nombre_carpeta)
+        directorio_carpeta = os.path.join(basedir, nombre_carpeta)
+        os.mkdir(directorio_carpeta)
         if (os.path.isdir(directorio_carpeta)):
             tipo = input("indique el tipo a - archivo y c - carpeta: ")
         if tipo == "a":
             archivo = input("indique el nombre del archivo: ")
-            manejador = open(DIRECTORIO_BASE + archivo, "w")
+            manejador = open(basedir , archivo, "w")
             manejador.close()
             print("ARCHIVO CREADO CON EXITO")
-        elif tipo == "c":
+        if tipo == "c":
             carpeta = input("indique el nombre de la carpeta: ")
-            carpeta = carpeta.strip()
-            os.mkdir(DIRECTORIO_BASE + carpeta)
-            print("carpeta", carpeta, "creado con exito")
+            os.mkdir(os.path.join(basedir, directorio_carpeta, carpeta))
+            print("carpeta", carpeta, "creada con exito")
     elif opcion == "e":
         nombre = input("ingrese nombre: ")
         eliminar = input("indique archivo / carpeta eliminar :")
-        print(nombre+eliminar)
         if (os.path.isfile(nombre+eliminar)):
             os.remove(nombre+eliminar)
-            print("archivo", eliminar, "eliminar con exito")
-        elif (os.path.isdir(DIRECTORIO_BASE+eliminar)):
-            os.rmdir(nombre+eliminar)
-            print("carpeta", eliminar, "eliminar con exito")
-
+            print("archivo", eliminar, "eliminado con exito")
+        elif (os.path.isdir((os.path.join(basedir, nombre, eliminar)))):
+            carpeta_a_eliminar = (os.path.join(basedir, nombre, eliminar))
+            os.rmdir(carpeta_a_eliminar)
+            print("carpeta", eliminar, "eliminado con exito")
+            
+            
+            
+            
+            
 def getEmailSubject(data : dict = {}) -> str:
     headers = data['payload']['headers']
     subject =  find(lambda item, i: item['name'] == 'Subject', headers)
