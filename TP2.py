@@ -303,7 +303,7 @@ def main():
         if opcion == 1:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
             if opcion2 == 1:
-               listar_archivos() 
+               listar_archivos(basedir) 
 
                 #print(listado_archivos)
 
