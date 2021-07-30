@@ -246,7 +246,7 @@ def sincronizacion(ruta):
                         res = obtener_servicio().files().create(body=metadata, media_body=archivo_local).execute()
                         if res:
                             print('Se subio el archivo: ', archivo_local, res['mimeType'])
-
+    
 def crear_carpeta_local(basedir):
     
     print("ver archivos y carpetas")
@@ -254,13 +254,15 @@ def crear_carpeta_local(basedir):
     if opcion == "c":
         nombre_carpeta = input("ingrese nombre carpeta: ")
         directorio_carpeta = os.path.join(basedir, nombre_carpeta)
+        print(directorio_carpeta)
         os.mkdir(directorio_carpeta)
         if (os.path.isdir(directorio_carpeta)):
             tipo = input("indique el tipo a - archivo y c - carpeta: ")
         if tipo == "a":
-            archivo = input("indique el nombre del archivo: ")
-            manejador = open(basedir , archivo, "w")
-            manejador.close()
+            nombre_archivo = input("indique el nombre del archivo con el formato (ej: .txt): ")
+            crear_archivo = open(nombre_archivo, "w")
+            crear_archivo.close()
+            shutil.move(nombre_archivo, directorio_carpeta)
             print("ARCHIVO CREADO CON EXITO")
         if tipo == "c":
             carpeta = input("indique el nombre de la carpeta: ")
@@ -269,14 +271,14 @@ def crear_carpeta_local(basedir):
     elif opcion == "e":
         nombre = input("ingrese nombre: ")
         eliminar = input("indique archivo / carpeta eliminar :")
-        if (os.path.isfile(nombre+eliminar)):
-            os.remove(nombre+eliminar)
+        if (os.path.isfile(os.path.join(basedir, nombre, eliminar))):
+            archivo_a_eliminar = (os.path.join(basedir, nombre, eliminar))
+            os.remove(archivo_a_eliminar)
             print("archivo", eliminar, "eliminado con exito")
         elif (os.path.isdir((os.path.join(basedir, nombre, eliminar)))):
             carpeta_a_eliminar = (os.path.join(basedir, nombre, eliminar))
             os.rmdir(carpeta_a_eliminar)
             print("carpeta", eliminar, "eliminado con exito")
-            
             
             
             
