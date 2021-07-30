@@ -313,7 +313,7 @@ def main():
         if opcion == 2:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
             if opcion2 == 1:
-                crear_carpeta_local()
+                crear_carpeta_local(basedir)
             if opcion2 == 2:
                 opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
                 if opcion3 == 1:
