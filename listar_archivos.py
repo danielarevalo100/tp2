@@ -2,7 +2,6 @@ from os.path import isfile, join, isdir
 from os import listdir, path
 import os
 
-
 def listar_archivos(basedir, profundidad = 0) : 
     espacios = ''
     for i in range(profundidad):

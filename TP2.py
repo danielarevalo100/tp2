@@ -67,33 +67,26 @@ def crear_carpeta():
         }
         obtener_servicio().files().create(body=file_metadata).execute()
 
-def recorrer_el_drive():
+def recorrer_el_drive(id='root', profundidad=0) -> None:
     '''
     pre:
     post: Le muestra todos los archivos y carpetas que hay en el drive
     '''
-    print('Listado de archivos en remoto: ')
-    nombre_archivos = list()
-    archivos = obtener_servicio().files().list().execute()
-    print('\n')
+    driveid = obtener_servicio().files().get(fileId=id).execute()['id']
+    query = f"parents = '{driveid}'"
+    archivos = obtener_servicio().files().list(q=query).execute()['files']
+
     for archivo in archivos:
-        if archivo == 'files':
-            print('\n')
-            for i in range(len(archivos[archivo])):
-
-                if archivos[archivo][i]['mimeType'] == 'application/vnd.google-apps.folder':
-                    print(i+1,') Carpeta = ','Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'] )
-                    query = f"parents = '{archivos[archivo][i]['id']}'"
-                    archivos_de_carpeta = obtener_servicio().files().list(q=query).execute()
-                    for archivo_carpeta in archivos_de_carpeta:
-                        if archivo_carpeta == 'files':
-                            for x in range(len(archivos_de_carpeta[archivo_carpeta])):
-                                print(' --- ',i+1,'.',x+1,')Archivo_de_carpeta:','Nombre: ',archivos_de_carpeta[archivo_carpeta][x]['name'],' - ',archivos_de_carpeta[archivo_carpeta][x]['mimeType'],' - id: ',archivos_de_carpeta[archivo_carpeta][x]['id'])
-                                nombre_archivos.append(archivos_de_carpeta[archivo_carpeta][x]['name'])
-
-                elif archivos[archivo][i]['name'] not in nombre_archivos:
-                    print(i+1,') Archivo =','Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'])
-    print('\n')
+    
+        espacios = ''
+        for i in range(profundidad):
+            espacios += '   '
+        
+        if archivo['mimeType'] == 'application/vnd.google-apps.folder':
+            print(espacios, 'carpeta', archivo['name'])
+            recorrer_el_drive(archivo['id'], profundidad+1)
+        else:
+            print(espacios, archivo['name'], '-', archivo['mimeType'])
 
 def limpiar_carpeta_archivos_a_subir():
     '''
