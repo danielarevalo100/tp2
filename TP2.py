@@ -19,7 +19,7 @@ import shutil
 from listar_archivos import listar_archivos
 from crear_carpetas import crear_carpetas
 from actualizar_entregas import actualizar_entregas
-DIRECTORIO_BASE = os.path.dirname(os.path.abspath(__file__))
+
 menu = (
     '1)Listar archivos de la carpeta actual.',
     '2)Crear un archivo.',
