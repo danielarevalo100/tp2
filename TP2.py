@@ -240,9 +240,9 @@ def comparar_archivos(dict_archivos_locales, dict_archivos_remoto, basedir):
         elif claves not in cosas_quenoquiero_subir:
             #Debe subir el archivo al remoto
             metadata = {'name': claves}
-            # contenido = MediaFileUpload(claves)
-            # obtener_servicio().files().create(body=metadata,media_body=contenido).execute()
-            # print('Se subio el archivo: ', claves)
+            contenido = MediaFileUpload(claves)
+            obtener_servicio().files().create(body=metadata,media_body=contenido).execute()
+            print('Se subio el archivo: ', claves)
 
     for claves, valores in dict_archivos_remoto.items():
         if claves not in dict_archivos_locales:
