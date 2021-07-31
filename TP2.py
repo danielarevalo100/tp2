@@ -260,34 +260,39 @@ def comparar_archivos(dict_archivos_locales, dict_archivos_remoto, basedir):
                 f.write(fh.read())
                 f.close()
 
-def crear_carpeta_local():
+def crear_carpeta_local(basedir):
+    
     print("ver archivos y carpetas")
+    print(os.listdir(basedir))
     opcion = input("selecciona una opcion c - crear carpeta y e - eliminar: ")
     if opcion == "c":
         nombre_carpeta = input("ingrese nombre carpeta: ")
-        directorio_carpeta = os.path.join(DIRECTORIO_BASE, nombre_carpeta)
+        directorio_carpeta = os.path.join(basedir, nombre_carpeta)
+        print(directorio_carpeta)
+        os.mkdir(directorio_carpeta)
         if (os.path.isdir(directorio_carpeta)):
             tipo = input("indique el tipo a - archivo y c - carpeta: ")
         if tipo == "a":
-            archivo = input("indique el nombre del archivo: ")
-            manejador = open(DIRECTORIO_BASE + archivo, "w")
-            manejador.close()
-            print("ARCHIVO CREADO CON EXITO")
-        elif tipo == "c":
+            nombre_archivo = input("indique el nombre del archivo con el formato (ej: .txt): ")
+            crear_archivo = open(nombre_archivo, "w")
+            crear_archivo.close()
+            shutil.move(nombre_archivo, directorio_carpeta)
+            print("archivo creado satisfactoriamente")
+        if tipo == "c":
             carpeta = input("indique el nombre de la carpeta: ")
-            carpeta = carpeta.strip()
-            os.mkdir(DIRECTORIO_BASE + carpeta)
-            print("carpeta", carpeta, "creado con exito")
+            os.mkdir(os.path.join(basedir, directorio_carpeta, carpeta))
+            print("carpeta", carpeta, "creada con exito")
     elif opcion == "e":
         nombre = input("ingrese nombre: ")
         eliminar = input("indique archivo / carpeta eliminar :")
-        print(nombre+eliminar)
-        if (os.path.isfile(nombre+eliminar)):
-            os.remove(nombre+eliminar)
-            print("archivo", eliminar, "eliminar con exito")
-        elif (os.path.isdir(DIRECTORIO_BASE+eliminar)):
-            os.rmdir(nombre+eliminar)
-            print("carpeta", eliminar, "eliminar con exito")
+        if (os.path.isfile(os.path.join(basedir, nombre, eliminar))):
+            archivo_a_eliminar = (os.path.join(basedir, nombre, eliminar))
+            os.remove(archivo_a_eliminar)
+            print("archivo", eliminar, "eliminado con exito")
+        elif (os.path.isdir((os.path.join(basedir, nombre, eliminar)))):
+            carpeta_a_eliminar = (os.path.join(basedir, nombre, eliminar))
+            os.rmdir(carpeta_a_eliminar)
+            print("carpeta", eliminar, "eliminado con exito")
 
 def getEmailSubject(data : dict = {}) -> str:
     headers = data['payload']['headers']
@@ -317,7 +322,7 @@ def main():
         if opcion == 2:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
             if opcion2 == 1:
-                crear_carpeta_local()
+                crear_carpeta_local(basedir)
             if opcion2 == 2:
                 opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
                 if opcion3 == 1:
