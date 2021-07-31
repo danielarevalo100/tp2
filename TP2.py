@@ -208,8 +208,6 @@ def comparar_fechas(dict_archivos_locales,dict_archivos_remoto,archivo):
     '''
     modificacion_local = dict_archivos_locales[archivo]
     modificacion_remoto = dict_archivos_remoto[archivo][0]
-    print('mod local: ',modificacion_local,'archivo: ',archivo)
-    print('mod remoto: ',modificacion_remoto,'archivo: ',archivo)
 
     if modificacion_local > modificacion_remoto:#Modifica el archivo que esta en el drive por el que esta en local
         contenido_archivo = MediaFileUpload(archivo, mimetype= dict_archivos_remoto[archivo][2])
@@ -231,29 +229,36 @@ def comparar_fechas(dict_archivos_locales,dict_archivos_remoto,archivo):
     elif modificacion_local == modificacion_remoto:
         print('No se modifico el archivo ', archivo)
 
-def comparar_archivos(dict_archivos_locales, dict_archivos_remoto):
-    cosas_quenoquiero_subir = ['__pycache__','Archivos_a_subir','Archivos_descargados','.gitignore','actualizar_entregas.py','client_secret_drive.json','crear_carpetas.py','gmailUtils.py','listar_archivos.py','README.md','service_drive.py','service_gmail.py','TP2.py','utils.py','token_drive.json']#Por si hay archivos en la carpeta principal que no queres subir
+def comparar_archivos(dict_archivos_locales, dict_archivos_remoto, basedir):
+    cosas_quenoquiero_subir = ['__pycache__','Archivos_a_subir','Archivos_descargados','.gitignore','actualizar_entregas.py','client_secret.json','crear_carpetas.py','gmailUtils.py','listar_archivos.py','README.md','service_drive.py','service_gmail.py','TP2.py','utils.py','token_drive.json','token.json']#Por si hay archivos en la carpeta principal que no queres subir
     list_remoto = list() #Se usa para ver los archivos que estan en el remoto pero no en el drive
 
-    for claves, valores in dict_archivos_locales.items():
-        print('Nombre archivo local:',claves, 'Fecha modificacion: ',valores)
-    print('\n')
-    for claves, valores in dict_archivos_remoto.items():
-        print('Nombre archivo remoto:',claves, 'Fecha modificacion: ',valores)
-    print('\n')
-    print('\t----')
-    print('\n')
     for claves, valores in dict_archivos_locales.items():
         if claves in dict_archivos_remoto:
             #LLamo a la funcion que analiza las fechas de modificacion
             comparar_fechas(dict_archivos_locales, dict_archivos_remoto,claves)
         elif claves not in cosas_quenoquiero_subir:
             #Debe subir el archivo al remoto
-            print('hola')
-            # metadata = {'name': claves}
+            metadata = {'name': claves}
             # contenido = MediaFileUpload(claves)
             # obtener_servicio().files().create(body=metadata,media_body=contenido).execute()
-            print('Se subio el archivo: ', claves)
+            # print('Se subio el archivo: ', claves)
+
+    for claves, valores in dict_archivos_remoto.items():
+        if claves not in dict_archivos_locales:
+            print(claves)
+            print(valores)
+            request = obtener_servicio().files().get_media(fileId=valores[1])
+            fh = io.BytesIO()
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while done is False:
+                status, done = downloader.next_chunk()
+                print("Download %d%%." % int(status.progress() * 100))
+            fh.seek(0)
+            with open(os.path.join(basedir, claves), 'wb') as f:# Te guarda en la carpeta local
+                f.write(fh.read())
+                f.close()
 
 def crear_carpeta_local():
     print("ver archivos y carpetas")
@@ -328,7 +333,7 @@ def main():
         
         if opcion == 5:
             dict_archivos_locales, dict_archivos_remoto = diccionarios_archivos(basedir)
-            comparar_archivos(dict_archivos_locales, dict_archivos_remoto)
+            comparar_archivos(dict_archivos_locales, dict_archivos_remoto,basedir)
 
         if opcion == 6:
             crear_carpetas(basedir)
