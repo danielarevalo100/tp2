@@ -10,11 +10,12 @@ def clear():
 def ingresar_opcion(menu):
     print('\n')
     for i in range(len(menu)):
-        print(menu[i])
-    opcion = input('Que opcion desea elegir?: ')
+        print(i+1,menu[i])
+    opcion = input(f'Que opcion desea elegir?: ')
     while not opcion.isnumeric() or int(opcion)<0 or int(opcion)>len(menu):
         opcion = input('Eliga una opcion correcta: ')
     opcion = int(opcion)
+    opcion -= 1
     return opcion
 
 def find(callback, arr) :

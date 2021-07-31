@@ -1,18 +1,29 @@
 from service_gmail import obtener_servicio_gmail
 from gmailUtils import *
+from utils import ingresar_opcion
 import os
 import zipfile
 
+
 def obtener_y_descomprimir():
     # retornara el asunto del mail y descomprimira el archivo zip
-
+    listamails = list()
+    listaids = list()
     service = obtener_servicio_gmail()
+    mails = service.users().messages().list(userId='me').execute()
+    for mailid in mails['messages']:
+        infomail = buscarMailPorId(service, mailid['id'])
+        asunto = obtenerAsunto(infomail)
+        listamails.append(asunto)
+        listaids.append(mailid['id'])
+    opcion = ingresar_opcion(listamails)
+    mailid = listaids[opcion]
 
     # por ahora lo se hizo con el ID del mail que tiene el comprimido, luego se implementara una busqueda con el nombre de la evaluacion
-    messageInfo = buscarMailPorId(service, '17ae03031b9e0a12')
+    messageInfo = buscarMailPorId(service, mailid)
     attachments = obtenerIdsDeAdjuntos(messageInfo)
 
-    att = service.users().messages().attachments().get(userId='me', messageId='17ab6106a4a03c07', id=attachments[0]).execute()
+    att = service.users().messages().attachments().get(userId='me', messageId=mailid, id=attachments[0]).execute()
     files = base64.urlsafe_b64decode(att['data'])
 
     z = zipfile.ZipFile(io.BytesIO(files))
@@ -39,7 +50,6 @@ def list_alum(basedir):
             list_alumnos = linea.split(',')
             alumnos.append(list_alumnos)
     return alumnos
-
 
 def list_docalum(basedir):
     ruta_alum_docentes = os.path.join(basedir, 'docente-alumnos.csv')

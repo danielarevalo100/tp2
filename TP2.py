@@ -7,7 +7,7 @@ from gmailUtils import *
 import base64
 import io 
 import zipfile
-from quickstart import obtener_servicio
+from service_drive import obtener_servicio
 from service_gmail import obtener_servicio_gmail
 import shutil
 from googleapiclient.http import MediaIoBaseDownload
@@ -21,14 +21,14 @@ from crear_carpetas import crear_carpetas
 from actualizar_entregas import actualizar_entregas
 
 menu = (
-    '1)Listar archivos de la carpeta actual.',
-    '2)Crear un archivo.',
-    '3)Subir un archivo.',
-    '4)Descargar un archivo.',
-    '5)Sincronizar.',
-    '6)Generar carpetas de una evaluaciion.',
-    '7)Actualizar entregas de alumnos viıa mail.',
-    '8)Salir.'
+    'Listar archivos de la carpeta actual.',
+    'Crear un archivo.',
+    'Subir un archivo.',
+    'Descargar un archivo.',
+    'Sincronizar.',
+    'Generar carpetas de una evaluaciion.',
+    'Actualizar entregas de alumnos viıa mail.',
+    'Salir.'
 )
 
 def crear_archivo():
@@ -67,26 +67,33 @@ def crear_carpeta():
         }
         obtener_servicio().files().create(body=file_metadata).execute()
 
-def recorrer_el_drive(id='root', profundidad=0) -> None:
+def recorrer_el_drive():
     '''
     pre:
     post: Le muestra todos los archivos y carpetas que hay en el drive
     '''
-    driveid = obtener_servicio().files().get(fileId=id).execute()['id']
-    query = f"parents = '{driveid}'"
-    archivos = obtener_servicio().files().list(q=query).execute()['files']
-
+    print('Listado de archivos en remoto: ')
+    nombre_archivos = list()
+    archivos = obtener_servicio().files().list().execute()
+    print('\n')
     for archivo in archivos:
-    
-        espacios = ''
-        for i in range(profundidad):
-            espacios += '   '
-        
-        if archivo['mimeType'] == 'application/vnd.google-apps.folder':
-            print(espacios, 'carpeta', archivo['name'])
-            recorrer_el_drive(archivo['id'], profundidad+1)
-        else:
-            print(espacios, archivo['name'], '-', archivo['mimeType'])
+        if archivo == 'files':
+            print('\n')
+            for i in range(len(archivos[archivo])):
+
+                if archivos[archivo][i]['mimeType'] == 'application/vnd.google-apps.folder':
+                    print(i+1,') Carpeta = ','Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'] )
+                    query = f"parents = '{archivos[archivo][i]['id']}'"
+                    archivos_de_carpeta = obtener_servicio().files().list(q=query).execute()
+                    for archivo_carpeta in archivos_de_carpeta:
+                        if archivo_carpeta == 'files':
+                            for x in range(len(archivos_de_carpeta[archivo_carpeta])):
+                                print(' --- ',i+1,'.',x+1,')Archivo_de_carpeta:','Nombre: ',archivos_de_carpeta[archivo_carpeta][x]['name'],' - ',archivos_de_carpeta[archivo_carpeta][x]['mimeType'],' - id: ',archivos_de_carpeta[archivo_carpeta][x]['id'])
+                                nombre_archivos.append(archivos_de_carpeta[archivo_carpeta][x]['name'])
+
+                elif archivos[archivo][i]['name'] not in nombre_archivos:
+                    print(i+1,') Archivo =','Nombre: ',archivos[archivo][i]['name'],' - ',archivos[archivo][i]['mimeType'],' - id: ',archivos[archivo][i]['id'])
+    print('\n')
 
 def limpiar_carpeta_archivos_a_subir():
     '''
@@ -239,40 +246,34 @@ def sincronizacion(ruta):
                         if res:
                             print('Se subio el archivo: ', archivo_local, res['mimeType'])
 
-def crear_carpeta_local(basedir):
-    
+def crear_carpeta_local():
     print("ver archivos y carpetas")
-    print(os.listdir(basedir))
     opcion = input("selecciona una opcion c - crear carpeta y e - eliminar: ")
     if opcion == "c":
         nombre_carpeta = input("ingrese nombre carpeta: ")
-        directorio_carpeta = os.path.join(basedir, nombre_carpeta)
-        print(directorio_carpeta)
-        os.mkdir(directorio_carpeta)
+        directorio_carpeta = os.path.join(DIRECTORIO_BASE, nombre_carpeta)
         if (os.path.isdir(directorio_carpeta)):
             tipo = input("indique el tipo a - archivo y c - carpeta: ")
         if tipo == "a":
-            nombre_archivo = input("indique el nombre del archivo con el formato (ej: .txt): ")
-            crear_archivo = open(nombre_archivo, "w")
-            crear_archivo.close()
-            shutil.move(nombre_archivo, directorio_carpeta)
-            print("archivo creado satisfactoriamente")
-        if tipo == "c":
+            archivo = input("indique el nombre del archivo: ")
+            manejador = open(DIRECTORIO_BASE + archivo, "w")
+            manejador.close()
+            print("ARCHIVO CREADO CON EXITO")
+        elif tipo == "c":
             carpeta = input("indique el nombre de la carpeta: ")
-            os.mkdir(os.path.join(basedir, directorio_carpeta, carpeta))
-            print("carpeta", carpeta, "creada con exito")
+            carpeta = carpeta.strip()
+            os.mkdir(DIRECTORIO_BASE + carpeta)
+            print("carpeta", carpeta, "creado con exito")
     elif opcion == "e":
         nombre = input("ingrese nombre: ")
         eliminar = input("indique archivo / carpeta eliminar :")
-        if (os.path.isfile(os.path.join(basedir, nombre, eliminar))):
-            archivo_a_eliminar = (os.path.join(basedir, nombre, eliminar))
-            os.remove(archivo_a_eliminar)
-            print("archivo", eliminar, "eliminado con exito")
-        elif (os.path.isdir((os.path.join(basedir, nombre, eliminar)))):
-            carpeta_a_eliminar = (os.path.join(basedir, nombre, eliminar))
-            os.rmdir(carpeta_a_eliminar)
-            print("carpeta", eliminar, "eliminado con exito")
-
+        print(nombre+eliminar)
+        if (os.path.isfile(nombre+eliminar)):
+            os.remove(nombre+eliminar)
+            print("archivo", eliminar, "eliminar con exito")
+        elif (os.path.isdir(DIRECTORIO_BASE+eliminar)):
+            os.rmdir(nombre+eliminar)
+            print("carpeta", eliminar, "eliminar con exito")
 
 def getEmailSubject(data : dict = {}) -> str:
     headers = data['payload']['headers']
@@ -292,11 +293,11 @@ def main():
   
     while not corte:
         opcion = ingresar_opcion(menu)
-
+        opcion +=1
         if opcion == 1:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
             if opcion2 == 1:
-               listar_archivos(basedir) 
+               listar_archivos() 
 
                 #print(listado_archivos)
 
@@ -306,7 +307,7 @@ def main():
         if opcion == 2:
             opcion2 = int(input('Si desea hacerlo en local apreta 1, si desea en remoto apreta 2: '))
             if opcion2 == 1:
-                crear_carpeta_local(basedir)
+                crear_carpeta_local()
             if opcion2 == 2:
                 opcion3 = int(input('Si desea crear un archivo ingresa 1, si desea crear una/s carpeta/s ingresa 2: '))
                 if opcion3 == 1:
