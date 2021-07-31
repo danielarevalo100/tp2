@@ -10,7 +10,7 @@ def obtener_y_descomprimir():
     listamails = list()
     listaids = list()
     service = obtener_servicio_gmail()
-    mails = service.users().messages().list(userId='me').execute()
+    mails = service.users().messages().list(userId='me', maxResults=5).execute()
     for mailid in mails['messages']:
         infomail = buscarMailPorId(service, mailid['id'])
         asunto = obtenerAsunto(infomail)

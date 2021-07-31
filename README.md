@@ -34,3 +34,8 @@ libreria os.path, entre ellas use isfile, join (ambas tambien usadas para listas
 tambien utilice el os.remove para archivos y os.rmdir para carpetas. y funciones de la libreria
 time para la ultima modificacion de un archivo en local, como localtime, datetime y stat
 
+# Daniel Arevalo
+Fue un proyecto bastante retador ya que manejamos temas un poco avanzados, requirio leer bastante la documentacion vaga que ofrece google pero al final logramos terminarlo, en mi caso, estaba acargo de todo lo relacionado con Gmail, enviar correos, buscoar correos, descargar archivos adjuntos y descomprimir.
+Para esto me enfoque en hacer mas que todo utilidades ya que no era algo complejo y esto requeria usarse en varios lugares del programa, todo lo relacionado con esto lo hice dentro del archivo 'gmailUtils.py' el que incluye enviar mail, buscar un mail por ID y buscar un mail con una query.
+
+Para que nuestro programa funcione, se debe ingresar las credenciales descargadas de la consola de google y nombrarlas como client_secret.json, igualmente que los archivos relacionados con la conexion a las APIs seran service_gmail y service_drive respectivamente.
