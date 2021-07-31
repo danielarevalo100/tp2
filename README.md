@@ -29,7 +29,8 @@ Sincronizacion:
 Genero 2 diccionarios (la funcion diccionarios_archivos), uno con los nombres de los archivos locales como claves y su fecha de ultima modificacion como valor; y otro con los nombres de los archivos remotos con una lista de datos que uso mas adelante, como valores. Luego le dejo la posibilidad al usuario que haga una lista con los archivos que se encuentran a nivel local, que no quiera subir al remoto(ej el archivo client_secret,json).Recorro los archivos locales y si veo que el mismo se encuentra en remoto llamo a la funcion comparar fechas. Si la ultima fecha de modificacion del archivo local es mayor que la del archivo remoto, sube el archivo local a remoto; si pasa lo contrario, borra el archivo local y descarga el archivo remoto. Si un archivo local no se encuentra en el google drive lo sube. Luego veo si un archivo si un archivo remoto no esta en local, si sucede esto lo descargo al local.
 
 # Diego Lavia
-me toco hacer la parte de carpetas, para la funcion init() busque informacion sobre las funciones de la
+me toco hacer la parte de carpetas, para la funcion crear_carpeta_local() busque informacion sobre las funciones de la
 libreria os.path, entre ellas use isfile, join (ambas tambien usadas para listas el directorio), isdir. 
 tambien utilice el os.remove para archivos y os.rmdir para carpetas. y funciones de la libreria
-time para la ultima modificacion de un archivo en local
+time para la ultima modificacion de un archivo en local, como localtime, datetime y stat
+
